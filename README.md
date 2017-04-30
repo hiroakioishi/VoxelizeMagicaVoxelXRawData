@@ -9,7 +9,7 @@ MagicaVoxel is a free lightweight 8-bit voxel editor and interactive path tracin
 <br/>
 (https://voxel.codeplex.com/)
 
-## Demo
+## Usage
 1. Type **o xraw** in MagicaVoxel command line to export volume data as .xraw file.
 2. import .xraw file in Unity Editor.
 3. Select **Tool>irishoak>XRaw2PNGConvertor**, and drag .xraw file into .xraw path column, then push **Create** button.
@@ -19,6 +19,7 @@ MagicaVoxel is a free lightweight 8-bit voxel editor and interactive path tracin
 7. Push **TriggerSetXRawDataParams** checkbox to set parameters.
 8. Push **TriggerVoxelize** checkbox to voxelize.
 
+## Demo
 https://youtu.be/S6zzStNM06k
 
 ## Requirement
