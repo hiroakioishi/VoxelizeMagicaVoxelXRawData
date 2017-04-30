@@ -1,7 +1,7 @@
 ﻿#pragma kernel CSResetTargetVoxelData
 #pragma kernel CSAppendTargetVoxelData
 
-#define VOXEL_COLOR_BRIGHTNESS_MIN 0.01
+#define VOXEL_COLOR_BRIGHTNESS_MIN 0.001
 
 struct VoxelData
 {
