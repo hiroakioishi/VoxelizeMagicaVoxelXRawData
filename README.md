@@ -19,7 +19,7 @@ MagicaVoxel is a free lightweight 8-bit voxel editor and interactive path tracin
 
 https://youtu.be/S6zzStNM06k
 
-## Requirements
+## Requirement
 requires a graphics card that can support DX11
 
 ## Licence
