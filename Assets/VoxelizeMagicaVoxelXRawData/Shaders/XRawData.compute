@@ -1,0 +1,91 @@
+﻿#pragma kernel CSResetTargetVoxelData
+#pragma kernel CSAppendTargetVoxelData
+
+struct VoxelData
+{
+	float3 position;
+	float4 rotation;
+	float  scale;
+	float4 color;
+};
+
+Texture2D<float4> _XRawVoxelDataTex;
+
+StructuredBuffer<VoxelData>   _TargetVoxelDataBufferRead;
+RWStructuredBuffer<VoxelData> _TargetVoxelDataBufferWrite;
+
+AppendStructuredBuffer<int>  _TargetVoxelDataDeadListBufferAppend;
+ConsumeStructuredBuffer<int> _TargetVoxelDataDeadListBufferConsume;
+
+float4 _XRawDataTexSize; // x, y, invx, invy
+float4 _XRawDataVoxelNum; // x, y, z, total
+
+float _TotalVoxelGridScale;
+float _VoxelScale;
+int   _TotalVoxelNum;
+
+// ---------------------------------------------------------------
+// CS Reset Target Voxel Data
+// ---------------------------------------------------------------
+[numthreads(256, 1, 1)]
+void CSResetTargetVoxelData
+(
+	uint3 DTid : SV_DispatchThreadID
+)
+{
+	int idx = (int)DTid.x;
+
+	VoxelData vd = _TargetVoxelDataBufferWrite[idx];
+	vd.scale = 0.0;
+	vd.rotation = float4(0, 0, 0, 1);
+	
+	_TargetVoxelDataBufferWrite[idx] = vd;
+	_TargetVoxelDataDeadListBufferAppend.Append(idx);
+}
+
+// ---------------------------------------------------------------
+// CS Append Target Voxel Data
+// ---------------------------------------------------------------
+[numthreads(8, 8, 1)]
+void CSAppendTargetVoxelData
+(
+	uint3 DTid : SV_DispatchThreadID
+)
+{
+	// XRaw Volume Data Index
+	uint idx = DTid.x + DTid.y * _XRawDataTexSize.x;
+
+	// XRaw Texture Index
+	uint2 uv = uint2
+	(
+		frac (idx * _XRawDataTexSize.z) * _XRawDataTexSize.x,
+		floor(idx * _XRawDataTexSize.w)
+	);
+
+	float4 col = _XRawVoxelDataTex[uv];
+
+	// Voxel Index (need to optimize...)
+	uint3 vIdx = uint3
+	(
+		(uint)fmod(idx, _XRawDataVoxelNum.x),
+		(uint)fmod(floor(idx / _XRawDataVoxelNum.x), _XRawDataVoxelNum.x),
+		(uint)floor(idx / (_XRawDataVoxelNum.x * _XRawDataVoxelNum.y))
+	);
+
+	if (length(col.rgb) < 0.01 || idx >= (uint)_XRawDataVoxelNum.w)
+	{
+		return;
+	}
+
+	// TargetVoxelData Index
+	int tIdx = _TargetVoxelDataDeadListBufferConsume.Consume();
+
+	// Set VoxelData
+	VoxelData vd;
+	vd.position = float3(vIdx.x, vIdx.z, vIdx.y) * _VoxelScale - 0.5 * _TotalVoxelGridScale;
+	vd.scale    = _VoxelScale;
+	vd.color    = float4(col.xyz, 1.0);
+	vd.rotation = float4(0, 0, 0, 1);
+
+	_TargetVoxelDataBufferWrite[tIdx] = vd;
+}
