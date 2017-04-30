@@ -1,6 +1,8 @@
 ﻿#pragma kernel CSResetTargetVoxelData
 #pragma kernel CSAppendTargetVoxelData
 
+#define VOXEL_COLOR_BRIGHTNESS_MIN 0.01
+
 struct VoxelData
 {
 	float3 position;
@@ -72,7 +74,7 @@ void CSAppendTargetVoxelData
 		(uint)floor(idx / (_XRawDataVoxelNum.x * _XRawDataVoxelNum.y))
 	);
 
-	if (length(col.rgb) < 0.01 || idx >= (uint)_XRawDataVoxelNum.w)
+	if (length(col.rgb) < VOXEL_COLOR_BRIGHTNESS_MIN || idx >= (uint)_XRawDataVoxelNum.w)
 	{
 		return;
 	}

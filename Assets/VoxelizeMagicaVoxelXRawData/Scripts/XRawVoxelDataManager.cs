@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using UnityEngine.Assertions;
 
 namespace irishoak.VoxelizeMagicaVoxelXRawData
 {
+    [ExecuteInEditMode]
     public class XRawVoxelDataManager : MonoBehaviour
     {
-
         #region Structs
         struct VoxelData
         {
@@ -92,6 +93,8 @@ namespace irishoak.VoxelizeMagicaVoxelXRawData
         #endregion
 
         #region MonoBehaviour Functions
+
+
         private void Update()
         {
             if (!_isInit)
@@ -132,7 +135,7 @@ namespace irishoak.VoxelizeMagicaVoxelXRawData
         {
             _totalVoxelNum = VoxelNumWidth * VoxelNumHeight * VoxelNumDepth;
 
-            Debug.Log(_totalVoxelNum);
+            Debug.Log("Generated total voxels num : " + _totalVoxelNum);
 
             _targetVoxelDataDeadListBuffer = new ComputeBuffer(_totalVoxelNum, Marshal.SizeOf(typeof(int)), ComputeBufferType.Append);
             _targetVoxelDataDeadListBuffer.SetCounterValue(0);
@@ -185,6 +188,10 @@ namespace irishoak.VoxelizeMagicaVoxelXRawData
         /// </summary>
         void SetXRawDataParams()
         {
+            Assert.IsTrue(XRawDataTex != null, "XRawTex is null");
+            if (XRawDataTex == null)
+                return;
+
             string xrawDataTexFileName = XRawDataTex.name;
             string data = new Regex(@"\d{1,3}-\d{1,3}-\d{1,3}_\d{1,4}-\d{1,4}").Match(xrawDataTexFileName).ToString();
             //Debug.Log(data);
