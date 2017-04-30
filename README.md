@@ -1,5 +1,7 @@
 # VoxelizeMagicaVoxelXRawData
 
+![img](https://github.com/hiroakioishi/VoxelizeMagicaVoxelXRawData/blob/master/img.jpg "img")
+
 ## Description
 Voxelize volume data(.xraw) exported with MagicaVoxel in Unity
 
