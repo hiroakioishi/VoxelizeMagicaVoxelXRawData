@@ -120,8 +120,8 @@
 		float3(0, -1, 0),	// Bottom
 		float3(0, 0, 1),	// Front
 		float3(0, 0, -1),	// Back
-		float3(1, 0, 0),	// Left
-		float3(-1, 0, 0),	// Right
+		float3(-1, 0, 0),	// Left
+		float3(1, 0, 0),	// Right
 	};
 
 	g2f getVertex(float3 center, float3 cv, float4 rot, float3 scl, float3 norm, float4 col, float2 texcoord)
